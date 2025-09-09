@@ -61,7 +61,7 @@ class Builder
 
             switch(target)
             {
-               case "ios", "android", "blackberry", "tizen", "emscripten", "webos", "windows", "msvc", "linux", "mac", "mingw", "tvos":
+               case "ios", "android", "blackberry", "tizen", "emscripten", "webos", "windows", "msvc", "linux", "mac", "mingw", "tvos"`, "nx":
                   defaultTarget = false;
                   if (linkStatic)
                   {
@@ -167,8 +167,11 @@ class Builder
                   validArchs.set("x86", ["-Diphonesim"].concat(staticFlags) );
                   validArchs.set("x86_64", ["-Diphonesim", "-DHXCPP_M64"].concat(staticFlags) );
 
-               case "android":
+               // Custom for Nintendo Switch (NX)
+               case "nx":
+                  validArchs.set("arm64", ["-Dnx", "-DHXCPP_ARM64", "-DHXCPP_M64"].concat(staticFlags));
 
+               case "android":
                   if( archs.length == 0 )
                      throw("You must specify the archs you want for android");
                

@@ -1,93 +1,127 @@
 <xml>
 
-<!-- LINUX TOOLS -->
+   <!-- LINUX TOOLS -->
 
 
-<section if="xcompile" >
-   <section if="HXCPP_M64">
-      <set name="CXX" value="${HXCPP_XLINUX64_CXX}" />
-      <set name="HXCPP_STRIP" value="${HXCPP_XLINUX64_STRIP}" />
-      <set name="HXCPP_AR" value="${HXCPP_XLINUX64_AR}" />
-      <set name="HXCPP_RANLIB" value="${HXCPP_XLINUX64_RANLIB}" />
+   <section if="xcompile">
+      <section if="HXCPP_M64">
+         <set name="CXX" value="${HXCPP_XLINUX64_CXX}" />
+         <set name="HXCPP_STRIP" value="${HXCPP_XLINUX64_STRIP}" />
+         <set name="HXCPP_AR" value="${HXCPP_XLINUX64_AR}" />
+         <set name="HXCPP_RANLIB" value="${HXCPP_XLINUX64_RANLIB}" />
+      </section>
+      <section unless="HXCPP_M64">
+         <set name="CXX" value="${HXCPP_XLINUX32_CXX}" />
+         <set name="HXCPP_STRIP" value="${HXCPP_XLINUX32_STRIP}" />
+         <set name="HXCPP_AR" value="${HXCPP_XLINUX32_AR}" />
+         <set name="HXCPP_RANLIB" value="${HXCPP_XLINUX32_RANLIB}" />
+      </section>
+      <section if="rpi">
+         <path name="c:/SysGCC/Raspberry/bin/" unless="HXCPP_XCOMPILE_RPI_PATH" />
+         <path name="${HXCPP_XCOMPILE_RPI_PATH}" if="HXCPP_XCOMPILE_RPI_PATH" />
+         <set name="CXX" value="arm-linux-gnueabihf-g++" />
+         <set name="HXCPP_STRIP" value="arm-linux-gnueabihf-strip" />
+         <set name="HXCPP_AR" value="arm-linux-gnueabihf-ar" />
+         <set name="HXCPP_RANLIB" value="arm-linux-gnueabihf-ranlib" />
+      </section>
+
+      <section if="nx">
+         <!-- Nintendo Switch DevKitARM paths -->
+         <path name="${DEVKITPRO}/devkitA64/bin/" />
+         <path name="${DEVKITPRO}/tools/bin/" />
+         <set name='CXX' value='aarch64-none-elf-g++' />
+         <set name='HXCPP_STRIP' value='aarch64-none-elf-strip' />
+         <set name='HXCPP_AR' value='aarch64-none-elf-ar' />
+         <set name='HXCPP_RANLIB' value='aarch64-none-elf-ranlib' />
+      </section>
+      
    </section>
-   <section unless="HXCPP_M64">
-      <set name="CXX" value="${HXCPP_XLINUX32_CXX}" />
-      <set name="HXCPP_STRIP" value="${HXCPP_XLINUX32_STRIP}" />
-      <set name="HXCPP_AR" value="${HXCPP_XLINUX32_AR}" />
-      <set name="HXCPP_RANLIB" value="${HXCPP_XLINUX32_RANLIB}" />
-   </section>
-   <section if="rpi">
-      <path name="c:/SysGCC/Raspberry/bin/" unless="HXCPP_XCOMPILE_RPI_PATH" />
-      <path name="${HXCPP_XCOMPILE_RPI_PATH}" if="HXCPP_XCOMPILE_RPI_PATH" />
-      <set name="CXX" value="arm-linux-gnueabihf-g++" />
-      <set name="HXCPP_STRIP" value="arm-linux-gnueabihf-strip" />
-      <set name="HXCPP_AR" value="arm-linux-gnueabihf-ar" />
-      <set name="HXCPP_RANLIB" value="arm-linux-gnueabihf-ranlib" />
-   </section>
-</section>
 
-<set name="HXCPP_CPP11" value="1" unless="HXCPP_NO_CPP11 || HXCPP_CPP17" />
+   <set name="HXCPP_CPP11" value="1" unless="HXCPP_NO_CPP11 || HXCPP_CPP17" />
 
-<include name="toolchain/gcc-toolchain.xml"/>
-<set name="noM32" value="1" if="HXCPP_NO_M32" />
-<set name="noM32" value="1" if="HXCPP_M64" />
-<set name="noM32" value="1" if="rpi" />
-<set name="noM32" value="1" if="HXCPP_ARM64" />
-<set name="noM64" value="1" if="HXCPP_ARM64" />
+   <include name="toolchain/gcc-toolchain.xml"/>
+   <set name="noM32" value="1" if="HXCPP_NO_M32" />
+   <set name="noM32" value="1" if="HXCPP_M64" />
+   <set name="noM32" value="1" if="rpi" />
+   <set name="noM32" value="1" if="HXCPP_ARM64" />
+   <set name="noM64" value="1" if="HXCPP_ARM64" />
 
-<compiler id="linux" exe="g++" if="linux">
-  <exe name="${CXX}" if="CXX" />
-  <flag value="-c"/>
-  <flag value="-fvisibility=hidden"/>
-  <cppflag value="-frtti"/>
-  <cppflag value="-std=c++11" if="HXCPP_CPP11" />
-  <cppflag value="-std=c++17" if="HXCPP_CPP17"/>
-  <flag value="-g" if="debug"/>
-  <flag value="-O2" unless="debug"/>
-  <flag value="-fpic"/>
-  <flag value="-fPIC"/>
-  <flag value="-Wno-overflow" />
-  <cppflag value="-Wno-invalid-offsetof" />
-  <flag value="-DHX_LINUX"/>
-  <flag value="-DRASPBERRYPI=RASPBERRYPI" if="rpi"/>
-  <flag value="-DHXCPP_MULTI_THREADED" if="HXCPP_MULTI_THREADED"/>
-  <flag value="-DHXCPP_BIG_ENDIAN" if="HXCPP_BIG_ENDIAN"/>
-  <include name="toolchain/common-defines.xml" />
-  <flag value="-m32" unless="noM32"/>
-  <flag value="-m64" if="HXCPP_M64" unless="noM64" />
-  <flag value="-DHXCPP_M64" if="HXCPP_M64"/>
-  <flag value="-I${HXCPP}/include"/>
-  <objdir value="obj/linux${OBJEXT}/"/>
-  <outflag value="-o"/>
-  <ext value=".o"/>
-</compiler>
+   <compiler id="linux" exe="g++" if="linux">
+      <exe name="${CXX}" if="CXX" />
+      <flag value="-c"/>
+      <flag value="-fvisibility=hidden"/>
+      <cppflag value="-frtti"/>
+      <cppflag value="-std=c++11" if="HXCPP_CPP11" />
+      <cppflag value="-std=c++17" if="HXCPP_CPP17"/>
+      <flag value="-g" if="debug"/>
+      <flag value="-O2" unless="debug"/>
 
-<linker id="dll" exe="g++" if="linux">
-  <exe name="${CXX}" if="CXX" />
-  <fromfile value="" if="GCC_OLD" />
-  <flag value="-shared"/>
-  <flag value="-fpic"/>
-  <flag value="-fPIC"/>
-  <flag value="-m32" unless="noM32"/>
-  <flag value="-m64" if="HXCPP_M64" unless="noM64" />
-  <flag value="-Xlinker"/>
-  <flag value="--no-undefined" unless="HXCPP_ALLOW_UNDEFINED" />
-  <flag value="-debug" if="debug"/>
-  <lib name="-ldl"/>
-  <ext value=".dso"/>
-  <outflag value="-o "/>
-</linker>
+      <section if="nx">
+         <flag value='-march=armv8-a+crc+crypto' />
+         <flag value='-mtp=soft' />
+         <flag value='-mtune=cortex-a57' />
+         <flag value='-fPIE' />
+         <flag value='-Wall' />
+         <flag value='-D__SWITCH__' />
+         <flag value='-D__TM_GMTOFF=tm_gmtoff'/>
+         <flag value='-ffunction-sections' />
+         <flag value='-fexceptions' />
+         <flag value='-fpermissive' />
+      </section>
+      <flag value="-fpic" unless="nx" />
+      <flag value="-fPIC" unless="nx"/>
 
-<linker id="exe" exe="g++" if="linux">
-  <exe name="${CXX}" if="CXX" />
-  <fromfile value="" if="GCC_OLD" />
-  <flag value="-debug" if="debug"/>
-  <flag value="-rdynamic"/>
-  <flag value="-m32" unless="noM32"/>
-  <flag value="-m64" if="HXCPP_M64" unless="noM64" />
-  <lib name="-ldl"/>
-  <ext value=""/>
-  <outflag value="-o "/>
-</linker>
+      <flag value="-Wno-overflow" />
+      <cppflag value="-Wno-invalid-offsetof" />
+
+      <flag value="-I${DEVKITPRO}/libnx/include" if="nx"/>
+
+      <flag value="-DHX_LINUX"/>
+      <flag value="-DRASPBERRYPI=RASPBERRYPI" if="rpi"/>
+      <flag value="-DHXCPP_MULTI_THREADED" if="HXCPP_MULTI_THREADED"/>
+      <flag value="-DHXCPP_BIG_ENDIAN" if="HXCPP_BIG_ENDIAN"/>
+      <include name="toolchain/common-defines.xml" />
+      <flag value="-m32" unless="noM32"/>
+      <!-- <flag value="-m64" if="HXCPP_M64" unless="noM64" /> -->
+      <flag value="-DHXCPP_M64" if="HXCPP_M64"/>
+      <flag value="-I${HXCPP}/include"/>
+      <objdir value="obj/linux${OBJEXT}/"/>
+      <outflag value="-o"/>
+      <ext value=".o"/>
+   </compiler>
+
+   <linker id="dll" exe="g++" if="linux">
+      <exe name="${CXX}" if="CXX" />
+      <fromfile value="" if="GCC_OLD" />
+      <flag value="-shared"/>
+      <flag value="-fpic"/>
+      <flag value="-fPIC"/>
+      <flag value="-m32" unless="noM32"/>
+      <!-- <flag value="-m64" if="HXCPP_M64" unless="noM64" /> -->
+      <flag value="-Xlinker"/>
+      <flag value="--no-undefined" unless="HXCPP_ALLOW_UNDEFINED" />
+      <flag value="-debug" if="debug"/>
+      <lib name="-ldl"/>
+
+      <section if="nx">
+         <flag value="-specs=switch.specs"/>
+         <lib name="-L${DEVKITPRO}/libnx/lib"/>
+      </section>
+
+      <ext value=".dso"/>
+      <outflag value="-o "/>
+   </linker>
+
+   <linker id="exe" exe="g++" if="linux">
+      <exe name="${CXX}" if="CXX" />
+      <fromfile value="" if="GCC_OLD" />
+      <flag value="-debug" if="debug"/>
+      <flag value="-rdynamic"/>
+      <flag value="-m32" unless="noM32"/>
+      <!-- <flag value="-m64" if="HXCPP_M64" unless="noM64" /> -->
+      <lib name="-ldl"/>
+      <ext value=""/>
+      <outflag value="-o "/>
+   </linker>
 
 </xml>
