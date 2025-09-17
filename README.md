@@ -1,9 +1,9 @@
-# hxcpp (NX support?)
+# hxcpp (Nintendo Switch support?)
 
 This fork of hxcpp has all the modifications needed to compile Haxe for the Nintendo Switch.
-[Code taken from an old fork of hxcpp for the Nintendo Switch.](https://github.com/retronx-team/switch-hxcpp)
+[Code taken from an old fork of hxcpp for the Nintendo Switch](https://github.com/retronx-team/switch-hxcpp) along with more changes in some parts of hxcpp to achieve a successful compilation for the console.
 
-More work is needed to get a usable executable on the console. perhaps I will do so in a short time, but I'm not really interested in using Haxe on the Nintendo Switch **for now**, I am interested in using Haxe on the Wii U through my [HxCompileU project](https://github.com/Slushi-Github/hxCompileU), which uses [Reflaxe/C++](https://github.com/SomeRanDev/reflaxe.CPP) (an alternative to hxcpp).
+To use this, check out [HaxeNXCompiler](https://github.com/Slushi-Github/HaxeNXCompiler).
 
 -----
 
