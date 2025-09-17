@@ -64,6 +64,8 @@
          <flag value='-Wall' />
          <flag value='-D__SWITCH__' />
          <flag value='-D__TM_GMTOFF=tm_gmtoff'/>
+         <flag value='-D__POSIX_VISIBLE'/>
+         <flag value='-D__BSD_VISIBLE'/>
          <flag value='-ffunction-sections' />
          <flag value='-fexceptions' />
          <flag value='-fpermissive' />
@@ -75,6 +77,7 @@
       <cppflag value="-Wno-invalid-offsetof" />
 
       <flag value="-I${DEVKITPRO}/libnx/include" if="nx"/>
+      <flag value="-DHX_NX" if="nx"/>
 
       <flag value="-DHX_LINUX"/>
       <flag value="-DRASPBERRYPI=RASPBERRYPI" if="rpi"/>
@@ -104,6 +107,7 @@
       <lib name="-ldl"/>
 
       <section if="nx">
+         <lib name="-lnx"/>
          <flag value="-specs=switch.specs"/>
          <lib name="-L${DEVKITPRO}/libnx/lib"/>
       </section>

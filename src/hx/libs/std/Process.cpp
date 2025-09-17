@@ -11,7 +11,7 @@
 #   include <memory.h>
 #   include <errno.h>
 #   include <signal.h>
-#   if defined(ANDROID) || defined(BLACKBERRY) || defined(EMSCRIPTEN)
+#   if defined(ANDROID) || defined(BLACKBERRY) || defined(EMSCRIPTEN) || defined(HX_NX)
 #      include <sys/wait.h>
 #   elif !defined(NEKO_MAC)
 #      include <wait.h>
@@ -565,7 +565,9 @@ void _hx_std_process_kill( Dynamic handle )
    #ifdef NEKO_WINDOWS
    TerminateProcess(p->pinf.hProcess, -1);
    #else
+   #if !defined(HX_NX)
    kill(p->pid, SIGTERM);
+   #endif
    #endif
 }
 

@@ -11,30 +11,34 @@
 #include <sys/stat.h>
 #endif
 
-
-
 #ifdef NEKO_WINDOWS
-   #include <windows.h>
-   #include <direct.h>
-   #include <conio.h>
-   #include <locale.h>
+#include <windows.h>
+#include <direct.h>
+#include <conio.h>
+#include <locale.h>
 #else
-   #include <errno.h>
-   #ifndef EPPC
-      #include <unistd.h>
-      #include <dirent.h>
-      #include <termios.h>
-      #include <sys/time.h>
-      #include <sys/times.h>
-   #endif
-   #include <limits.h>
-   #ifndef ANDROID
-      #include <locale.h>
-      #if !defined(BLACKBERRY) && !defined(EPPC) && !defined(GCW0) && !defined(__GLIBC__)
-         #include <xlocale.h>
-      #endif
-   #endif
+#include <errno.h>
+#ifndef EPPC
+#include <unistd.h>
+#include <dirent.h>
+#if defined(HX_NX)
+#include <machine/termios.h>
+#else
+#include <termios.h>
 #endif
+#include <sys/time.h>
+#include <sys/times.h>
+#endif
+#include <limits.h>
+#ifndef ANDROID
+#include <locale.h>
+#if !defined(BLACKBERRY) && !defined(EPPC) && !defined(GCW0) && !defined(__GLIBC__) && !defined(HX_NX)
+#include <xlocale.h>
+#elif defined(HX_NX)
+#include <locale.h>
+#endif
+#endif // Added missing #endif for #ifndef ANDROID
+#endif // Added missing #endif for #ifdef NEKO_WINDOWS
 
 #ifdef EMSCRIPTEN
    #include <sys/wait.h>
@@ -53,7 +57,11 @@
 #endif
 
 #ifdef HX_ANDROID
- #include <sys/wait.h>
+   #include <sys/wait.h>
+#endif
+
+#ifdef HX_NX
+#include <sys/wait.h>
 #endif
 
 #ifndef CLK_TCK
@@ -108,10 +116,12 @@ void _hx_std_put_env( String e, String v )
    #endif
       putenv(set.utf8_str());
 #else
+   #if !defined(HX_NX)
    if (v == null())
       unsetenv(e.utf8_str());
    else
       setenv(e.utf8_str(),v.utf8_str(),1);
+   #endif
 #endif
 }
 
@@ -270,6 +280,8 @@ String _hx_std_sys_string()
    return HX_CSTRING("Emscripten");
 #elif defined(EPPC)
    return HX_CSTRING("EPPC");
+#elif defined(HX_NX)
+   return HX_CSTRING("NX");
 #else
 #error Unknow system string
 #endif
@@ -747,7 +759,7 @@ Array<String> _hx_std_sys_read_dir( String p )
 **/
 String _hx_std_file_full_path( String path )
 {
-#if defined(HX_WINRT)
+#if defined(HX_WINRT) || defined(HX_NX)
    return path;
 #elif defined(NEKO_WINDOWS)
    wchar_t buf[MAX_PATH+1];
@@ -787,7 +799,7 @@ String _hx_std_sys_exe_path()
    if( _NSGetExecutablePath(path, &path_len) )
       return null();
    return String::create(path);
-#elif defined(EPPC)
+#elif defined(EPPC) || defined(HX_NX)
    return HX_CSTRING("");
 #else
    {
@@ -865,7 +877,7 @@ Array<String> _hx_std_sys_env()
 **/
 int _hx_std_sys_getch( bool b )
 {
-#if defined(HX_WINRT) || defined(EMSCRIPTEN) || defined(EPPC)
+#if defined(HX_WINRT) || defined(EMSCRIPTEN) || defined(EPPC) || defined(HX_NX)
    return 0;
 #elif defined(NEKO_WINDOWS)
    hx::EnterGCFreeZone();
