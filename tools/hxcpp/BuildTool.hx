@@ -1927,7 +1927,7 @@ class BuildTool
          defines.set("linux","linux");
          defines.set("HXCPP_LINUX_ARM64", "1");
          defines.set("HXCPP_NO_M32", "1");
-         efines.set("BINDIR","Switch");
+         defines.set("BINDIR","Switch");
          Log.println(" - Assuming ARM64 for Nintendo Switch...");
       }
 
