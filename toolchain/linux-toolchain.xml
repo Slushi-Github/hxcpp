@@ -56,19 +56,34 @@
       <flag value="-g" if="debug"/>
       <flag value="-O2" unless="debug"/>
 
+      <!-- Nintendo Switch specific flags -->
       <section if="nx">
          <flag value='-march=armv8-a+crc+crypto' />
          <flag value='-mtp=soft' />
          <flag value='-mtune=cortex-a57' />
          <flag value='-fPIE' />
          <flag value='-Wall' />
+         <flag value='-Wreorder' />
+         <flag value='-Wstrict-aliasing' />
+         <flag value='-Winvalid-offsetof' />
+         <flag value='-Wsign-compare' />
+         <flag value='-Wunknown-pragmas' />
          <flag value='-D__SWITCH__' />
+         <flag value='-D__NX__' /> <!-- Mmm... -->
          <flag value='-D__TM_GMTOFF=tm_gmtoff'/>
          <flag value='-D__POSIX_VISIBLE'/>
          <flag value='-D__BSD_VISIBLE'/>
+         <flag value="-DHX_NX"/>
+
+         <!-- HashLink flags -->
+         <flag value="-DHL_CONSOLE"/>
+         <flag value="-DHL_NX"/>
+
          <flag value='-ffunction-sections' />
          <flag value='-fexceptions' />
          <flag value='-fpermissive' />
+         <flag value='-static' />
+         <flag value="-I${DEVKITPRO}/libnx/include"/>
       </section>
       <flag value="-fpic" unless="nx" />
       <flag value="-fPIC" unless="nx"/>
@@ -76,16 +91,13 @@
       <flag value="-Wno-overflow" />
       <cppflag value="-Wno-invalid-offsetof" />
 
-      <flag value="-I${DEVKITPRO}/libnx/include" if="nx"/>
-      <flag value="-DHX_NX" if="nx"/>
-
       <flag value="-DHX_LINUX"/>
       <flag value="-DRASPBERRYPI=RASPBERRYPI" if="rpi"/>
       <flag value="-DHXCPP_MULTI_THREADED" if="HXCPP_MULTI_THREADED"/>
       <flag value="-DHXCPP_BIG_ENDIAN" if="HXCPP_BIG_ENDIAN"/>
       <include name="toolchain/common-defines.xml" />
       <flag value="-m32" unless="noM32"/>
-      <!-- <flag value="-m64" if="HXCPP_M64" unless="noM64" /> -->
+      <flag value="-m64" if="HXCPP_M64" unless="noM64 || nx" />
       <flag value="-DHXCPP_M64" if="HXCPP_M64"/>
       <flag value="-I${HXCPP}/include"/>
       <objdir value="obj/linux${OBJEXT}/"/>
@@ -100,7 +112,7 @@
       <flag value="-fpic"/>
       <flag value="-fPIC"/>
       <flag value="-m32" unless="noM32"/>
-      <!-- <flag value="-m64" if="HXCPP_M64" unless="noM64" /> -->
+      <flag value="-m64" if="HXCPP_M64" unless="noM64 || nx" />
       <flag value="-Xlinker"/>
       <flag value="--no-undefined" unless="HXCPP_ALLOW_UNDEFINED" />
       <flag value="-debug" if="debug"/>
@@ -122,7 +134,7 @@
       <flag value="-debug" if="debug"/>
       <flag value="-rdynamic"/>
       <flag value="-m32" unless="noM32"/>
-      <!-- <flag value="-m64" if="HXCPP_M64" unless="noM64" /> -->
+      <flag value="-m64" if="HXCPP_M64" unless="noM64 || nx" />
       <lib name="-ldl"/>
       <ext value=""/>
       <outflag value="-o "/>
